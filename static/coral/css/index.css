@@ -1,0 +1,214 @@
+/* =========================================
+    1. PALETA DE CORES: OCEANIC UI (Light Mode)
+    ========================================= */
+:root {
+    /* Fundo e Superfícies: Brancos Perolados e Areia */
+    --bg-base: #f7f9fc; 
+    --glass-bg: rgba(255, 255, 255, 0.94); 
+    --glass-border: rgba(0, 119, 182, 0.15);
+    
+    /* Água e Destaques Naturais (Sem Neon) */
+    --water-accent: #0077b6; /* Azul profundo legível */
+    --water-light: #caf0f8; /* Azul espuma do mar para os cards */
+    --water-deep: #03045e;
+    
+    /* Textos (Alto contraste sem usar preto puro) */
+    --text-main: #023e8a;
+    --text-muted: #5c6b7d;
+    
+    /* Alertas e Ações: Tons de Coral */
+    --coral-alert: #d62828; /* Vermelho coral puro, sem neon */
+    --coral-action: #f4a261; /* Laranja pêssego sólido */
+    
+    /* Formas Orgânicas: Sombras suaves de luz do dia */
+    --shadow-organic: 0 16px 40px rgba(0, 119, 182, 0.08);
+    
+    /* Filtro Suave para o Mapa: Apenas realça a água do OSM, mantendo claro */
+    --map-filter: none
+}
+
+/* =========================================
+    2. RESETS E LAYOUT BASE
+    ========================================= */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+}
+
+body, html {
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    background-color: var(--bg-base);
+    color: var(--text-main);
+}
+
+/* =========================================
+    3. MAPA E FILTROS MARINHOS
+    ========================================= */
+#map-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    background-color: var(--water-light);
+
+    /* Nesting Nativo para elementos de controle dentro do mapa */
+    /* .leaflet-tile-pane {
+        filter: var(--map-filter);
+    } */
+
+    .leaflet-control-zoom {
+        & a {
+            background-color: var(--glass-bg) !important;
+            color: var(--water-accent) !important;
+            border: 1px solid var(--glass-border) !important;
+            border-radius: 12px !important;
+            box-shadow: var(--shadow-organic) !important;
+            margin-bottom: 4px !important;
+            transition: background-color 0.2s ease;
+
+            &:hover {
+                background-color: var(--water-light) !important;
+            }
+        }
+    }
+
+    .leaflet-control-scale {
+        margin-left: 24px !important;
+        margin-bottom: 24px !important;
+
+        &-line {
+            background: var(--glass-bg) !important;
+            border: 2px solid var(--water-accent) !important;
+            border-top: none !important;
+            color: var(--text-main) !important;
+            font-weight: bold !important;
+            font-size: 10px !important;
+            border-radius: 0 0 4px 4px;
+        }
+    }
+}
+
+/* =========================================
+    4. COMPONENTES DE INTERFACE (UI)
+    ========================================= */
+.ui-layer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 10;
+    display: flex;
+    padding: 24px;
+
+    /* Nesting Nativo para o Painel de Telemetria */
+    .telemetry-panel {
+        pointer-events: auto;
+        width: 320px;
+        height: fit-content;
+        background: var(--glass-bg);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: 1px solid var(--glass-border);
+        border-radius: 24px;
+        padding: 24px;
+        box-shadow: var(--shadow-organic);
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+
+        /* Nesting do Header */
+        .panel-header {
+            & h1 {
+                font-size: 1.3rem;
+                font-weight: 700;
+                color: var(--water-accent);
+                margin-bottom: 4px;
+                letter-spacing: 0.2px;
+            }
+
+            & p {
+                font-size: 0.85rem;
+                color: var(--text-muted);
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+            }
+        }
+
+        /* Nesting da Grade de Dados */
+        .data-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+
+            .data-card {
+                background: var(--water-light);
+                border: none;
+                border-radius: 18px;
+                padding: 16px 12px;
+                text-align: center;
+                transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.3s ease;
+
+                &:hover {
+                    transform: translateY(-4px);
+                    box-shadow: 0 8px 16px rgba(0, 119, 182, 0.1);
+                }
+
+                .label {
+                    display: block;
+                    font-size: 0.75rem;
+                    color: var(--text-main);
+                    text-transform: uppercase;
+                    margin-bottom: 6px;
+                    font-weight: 600;
+                    opacity: 0.8;
+                }
+
+                .value {
+                    display: block;
+                    font-size: 1.4rem;
+                    font-weight: 800;
+                    color: var(--water-accent);
+                }
+
+                /* Modificador de Alerta aninhado */
+                &.alert .value {
+                    color: var(--coral-alert);
+                }
+            }
+        }
+
+        /* Botão de Ação aninhado dentro do escopo do painel */
+        .btn-primary {
+            background: var(--coral-action);
+            color: white;
+            border: none;
+            padding: 14px 16px;
+            border-radius: 24px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 12px rgba(244, 162, 97, 0.2);
+
+            &:hover {
+                background: #e78c43;
+                transform: scale(1.02);
+                box-shadow: 0 6px 16px rgba(244, 162, 97, 0.3);
+            }
+
+            &:active {
+                transform: scale(0.98);
+            }
+        }
+    }
+}

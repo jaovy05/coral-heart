@@ -1,0 +1,25 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Monitoramento Marinho</title>
+
+    <meta name="referrer" content="no-referrer-when-downgrade">
+    <!-- Leaflet CSS (Imported via CDN) -->
+    <link rel="stylesheet" href="{% static 'coral/css/leaflet.min.css' %}" />
+    <link rel="stylesheet" href="{% static 'coral/css/index.css' %}" />
+</head>
+<body>
+
+    <!-- CONTAINER DO MAPA -->
+    <div id="map-container"></div>
+
+    {{ recifes|json_script:"recifes-data" }} 
+
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="{% static 'coral/js/mapa.js' %}"></script>
+</body>
+</html>
