@@ -1,6 +1,6 @@
 # coisas do python
 __pycache__/
-__init__.py
+.venv
 
 # lixo que criei na resenha
 *.txt
