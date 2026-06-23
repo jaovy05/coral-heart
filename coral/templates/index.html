@@ -5,21 +5,122 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sistema de Monitoramento Marinho</title>
-
     <meta name="referrer" content="no-referrer-when-downgrade">
     <!-- Leaflet CSS (Imported via CDN) -->
     <link rel="stylesheet" href="{% static 'coral/css/leaflet.min.css' %}" />
     <link rel="stylesheet" href="{% static 'coral/css/index.css' %}" />
+    <link rel="stylesheet" href="{% static 'coral/css/mapa-ui.css' %}" />
+    <link rel="stylesheet" href="{% static 'coral/css/media-mes-modal.css' %}" />
+    <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body>
 
-    <!-- CONTAINER DO MAPA -->
-    <div id="map-container"></div>
+  <!-- CONTAINER DO MAPA -->
+    <div id="map-container">
+        
+        <!-- Painel de Controle de Escala e Debug (Canto Superior Direito) -->
+        <div class="oceanic-floating-panel panel-controls">
+            <div class="panel-title">
+                <i data-lucide="sliders-horizontal" style="width: 14px; height: 14px;"></i>
+                Controles Térmicos & Escala
+            </div>
+            
+            <!-- Controle de Raio -->
+            <div class="control-group">
+                <div class="control-label">
+                    <span>Raio Térmico (Radius)</span>
+                    <span id="radius-val" style="color: var(--color-cyan-glow)">25 px</span>
+                </div>
+                <input type="range" id="input-radius" class="oceanic-slider" min="5" max="80" value="25" oninput="adjustHeatmapScale()">
+            </div>
+
+            <!-- Controle de Intensidade -->
+            <div class="control-group">
+                <div class="control-label">
+                    <span>Sensibilidade Máxima</span>
+                    <span id="max-val" style="color: var(--color-cyan-glow)">1.0</span>
+                </div>
+                <input type="range" id="input-max" class="oceanic-slider" min="0.1" max="3.0" step="0.1" value="1.0" oninput="adjustHeatmapScale()">
+            </div>
+
+            <!-- Divisor sutil -->
+            <div style="height: 1px; background: rgba(127, 191, 205, 0.18); margin: 12px 0;"></div>
+
+
+            <!-- Acesso Usuários -->
+            <div class="control-group">
+                <a href="{% url 'user-update' %}" class="nav-btn" style="display:block; text-align:center; padding: 10px;">
+                    <i data-lucide="user" style="width: 12px; height: 12px;"></i> Gerenciar Usuário
+                </a>
+            </div>
+            <!-- Navegação Rápida (UX para resolver o descompasso geográfico) -->
+            <div class="control-group">
+                <span class="control-label" style="margin-bottom: 8px;">Navegação Tática</span>
+                <div style="display: flex; gap: 8px;">
+                    <button class="nav-btn flex-1" onclick="focusOnTelemetry()">
+                        <i data-lucide="compass" style="width: 12px; height: 12px;"></i> Telemetria (Brasil)
+                    </button>
+                    <button class="nav-btn flex-1" onclick="focusOnRegions()">
+                        <i data-lucide="globe" style="width: 12px; height: 12px;"></i> Recifes (Mundial)
+                    </button>
+                </div>
+            </div>
+
+            <!-- Divisor sutil -->
+            <div style="height: 1px; background: rgba(127, 191, 205, 0.18); margin: 12px 0;"></div>
+
+     
+        </div>
+
+        <!-- Painel de Legenda / Escala Cromática (Canto Inferior Esquerdo) -->
+        <div class="oceanic-floating-panel panel-legend">
+            <div class="panel-title" style="margin-bottom: 4px;">
+                <i data-lucide="waves" style="width: 12px; height: 12px;"></i>
+                Gradiente de Temperatura
+            </div>
+            <div class="thermal-gradient-bar"></div>
+            <div style="display: flex; justify-content: space-between; font-size: 9px; font-family: monospace; color: #94a3b8;">
+                <span id="legend-min">Min -- °C</span>
+                <span>Normalizado</span>
+                <span id="legend-max">Max -- °C</span>
+            </div>
+        </div>
+
+        <!-- Modal de Média Mensal -->
+        <div id="media-mes-modal" class="reef-modal" aria-hidden="true" role="dialog" aria-modal="true">
+            <div class="reef-modal__dialog">
+                <div class="reef-modal__header">
+                    <div>
+                        <div id="media-mes-modal-title" class="reef-modal__title">Dados do mês</div>
+                        <div id="media-mes-modal-subtitle" class="reef-modal__subtitle">Selecione um recife para ver as médias.</div>
+                    </div>
+                    <button class="reef-modal__close" type="button" onclick="fecharModalMediaMes()" aria-label="Fechar modal">
+                        <i data-lucide="x" style="width: 16px; height: 16px;"></i>
+                    </button>
+                </div>
+                <div id="media-mes-modal-body" class="reef-modal__content">
+                    <div class="modal-loading">Clique em um recife para carregar os dados.</div>
+                </div>
+            </div>
+        </div>
+
+    </div>
 
     {{ recifes|json_script:"recifes-data" }} 
 
-    <!-- Leaflet JS -->
+    <!-- Carregamento de Bibliotecas Base -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.heat/0.2.0/leaflet-heat.js"></script>
+    
+    <!-- MÓDULOS DE JS (Importados na ordem correta de dependência) -->
+    <script src="{% static 'coral/js/heat.js' %}"></script>
+    <script src="{% static 'coral/js/media-mes-modal.js' %}"></script>
+    <script src="{% static 'coral/js/regioes.js' %}"></script>
     <script src="{% static 'coral/js/mapa.js' %}"></script>
+
+    <script>
+        // Inicializa os ícones decorativos da UI
+        lucide.createIcons();
+    </script>
 </body>
 </html>

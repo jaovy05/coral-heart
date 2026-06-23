@@ -3,29 +3,106 @@
     ========================================= */
 :root {
     /* Fundo e Superfícies: Brancos Perolados e Areia */
-    --bg-base: #f7f9fc; 
-    --glass-bg: rgba(255, 255, 255, 0.94); 
-    --glass-border: rgba(0, 119, 182, 0.15);
+    --bg-base: #f5f7f9;
+    --glass-bg: rgba(255, 255, 255, 0.94);
+    --glass-border: rgba(96, 141, 170, 0.18);
     
     /* Água e Destaques Naturais (Sem Neon) */
-    --water-accent: #0077b6; /* Azul profundo legível */
-    --water-light: #caf0f8; /* Azul espuma do mar para os cards */
-    --water-deep: #03045e;
+    --water-accent: #5c8ea8;
+    --water-light: #edf5f7;
+    --water-deep: #284b63;
     
     /* Textos (Alto contraste sem usar preto puro) */
-    --text-main: #023e8a;
-    --text-muted: #5c6b7d;
+    --text-main: #24455c;
+    --text-muted: #6f8291;
     
     /* Alertas e Ações: Tons de Coral */
-    --coral-alert: #d62828; /* Vermelho coral puro, sem neon */
-    --coral-action: #f4a261; /* Laranja pêssego sólido */
+    --coral-alert: #c86f72;
+    --coral-action: #e1a37d;
     
     /* Formas Orgânicas: Sombras suaves de luz do dia */
-    --shadow-organic: 0 16px 40px rgba(0, 119, 182, 0.08);
+    --shadow-organic: 0 16px 40px rgba(36, 69, 92, 0.08);
     
     /* Filtro Suave para o Mapa: Apenas realça a água do OSM, mantendo claro */
-    --map-filter: none
+    --map-filter: none;
 }
+
+/* =========================================
+    5. OVERRIDES DO HEATMAP E DEBUG
+    ========================================= */
+
+#map-container canvas.leaflet-heatmap-layer,
+#map-container .leaflet-heatmap-layer {
+    opacity: 1 !important;
+    mix-blend-mode: normal;
+    pointer-events: none;
+}
+
+.custom-debug-icon {
+    background: transparent !important;
+    border: 0 !important;
+}
+
+.custom-debug-marker {
+    position: relative;
+    width: 16px;
+    height: 16px;
+    display: grid;
+    place-items: center;
+}
+
+.custom-debug-marker__pulse {
+    position: absolute;
+    inset: 0;
+    border-radius: 9999px;
+    background: rgba(233, 168, 183, 0.22);
+    box-shadow: 0 0 0 6px rgba(233, 168, 183, 0.08);
+    animation: coral-debug-pulse 1.7s ease-out infinite;
+}
+
+.custom-debug-marker__core {
+    position: relative;
+    width: 10px;
+    height: 10px;
+    border-radius: 9999px;
+    background: #e9a8b7;
+    border: 2px solid #ffffff;
+    box-shadow: 0 0 10px rgba(233, 168, 183, 0.45);
+}
+
+@keyframes coral-debug-pulse {
+    0% {
+        transform: scale(0.75);
+        opacity: 0.9;
+    }
+    70% {
+        transform: scale(1.45);
+        opacity: 0;
+    }
+    100% {
+        transform: scale(1.45);
+        opacity: 0;
+    }
+}
+
+/* =========================================
+    6. HEATMAP E DEBUG
+    ========================================= */
+
+.reef-tooltip.leaflet-tooltip {
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(92, 142, 168, 0.18);
+    color: var(--text-main);
+    box-shadow: 0 8px 20px rgba(36, 69, 92, 0.12);
+    border-radius: 9999px;
+    font-size: 11px;
+    padding: 6px 10px;
+}
+
+.reef-tooltip.leaflet-tooltip:before {
+border-top-color: rgba(255, 255, 255, 0.95);
+}
+
 
 /* =========================================
     2. RESETS E LAYOUT BASE

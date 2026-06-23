@@ -1,0 +1,21 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Confirmar Exclusão - Coral Heart</title>
+    <link rel="stylesheet" href="{% static 'coral/css/index.css' %}" />
+    <link rel="stylesheet" href="{% static 'coral/css/auth-form.css' %}" />
+</head>
+<body class="auth-form-body">
+    <div class="form-container">
+        <h1>Excluir Conta</h1>
+        <form method="post">
+            {% csrf_token %}
+            <p>Tem certeza que deseja excluir sua conta, {{ user.username }}?</p>
+            <button type="submit" class="delete-button">Confirmar Exclusão</button>
+        </form>
+        <a href="{% url 'index' %}">Cancelar</a>
+    </div>
+</body>
+</html>
