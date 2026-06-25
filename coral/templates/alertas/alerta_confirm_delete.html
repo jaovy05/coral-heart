@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Deletar Alerta</h2>
+<p>Tem certeza que deseja deletar o alerta para {{ object.region_name }}?</p>
+<form method="post">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-danger">Confirmar Deleção</button>
+</form>
+{% endblock %}

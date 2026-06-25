@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Meus Alertas</h2>
+<a href="{% url 'alerta-create' %}" class="btn btn-primary">Novo Alerta</a>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Região</th>
+            <th>Temperatura Limite</th>
+            <th>Ativo</th>
+            <th>Ações</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for alerta in alertas %}
+        <tr>
+            <td>{{ alerta.region_name }}</td>
+            <td>{{ alerta.target_temp }}°C</td>
+            <td>{{ alerta.active|yesno:"Sim,Não" }}</td>
+            <td>
+                <a href="{% url 'alerta-update' alerta.pk %}">Editar</a>
+                <a href="{% url 'alerta-delete' alerta.pk %}">Deletar</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

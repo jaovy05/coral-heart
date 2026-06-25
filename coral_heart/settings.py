@@ -37,8 +37,16 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_crontab',
     'coral.apps.CoralConfig',
 ]
+
+# ... (existing settings)
+
+CRONJOBS = [
+    ('0 13 * * *', 'django.core.management.call_command', ['process_alerts']),
+]
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -127,3 +135,4 @@ STATICFILES_DIRS = [
 
 LOGIN_REDIRECT_URL = '/'
 LOGIN_URL = '/login/'
+DEFAULT_FROM_EMAIL = 'joaovitorg.silva050@gmail.com'

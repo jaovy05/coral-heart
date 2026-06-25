@@ -21,4 +21,10 @@ urlpatterns = [
     path('users/update/', views.UserUpdateView.as_view(), name='user-update'),
     path('users/delete/', views.UserDeleteView.as_view(), name='user-delete'),
 
+    # Alertas CRUD
+    path('alertas/', views.AlertaListView.as_view(), name='alerta-list'),
+    path('alertas/criar/', views.AlertaCreateView.as_view(), name='alerta-create'),
+    path('alertas/<int:pk>/editar/', views.AlertaUpdateView.as_view(), name='alerta-update'),
+    path('alertas/<int:pk>/deletar/', views.AlertaDeleteView.as_view(), name='alerta-delete'),
+    path('alertas/api/criar/', views.criar_alerta_api, name='alerta-criar-api'),
 ]

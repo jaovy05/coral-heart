@@ -207,7 +207,41 @@
     flex-direction: column;
     gap: 6px;
     min-height: 90px;
+    position: relative;
     transition: transform 0.18s ease, border-color 0.18s ease, background 0.18s ease, box-shadow 0.18s ease;
+}
+
+.modal-metric-info-btn {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: none;
+    border: none;
+    color: rgba(200, 233, 246, 0.6);
+    cursor: pointer;
+    padding: 2px;
+    z-index: 10;
+}
+
+.modal-metric-info-btn:hover {
+    color: #fff;
+}
+
+.modal-popover {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    width: 220px;
+    background: rgba(6, 27, 45, 0.98);
+    border: 1px solid #4cd7ff;
+    padding: 12px;
+    border-radius: 12px;
+    font-size: 12px;
+    color: #eaf7ff;
+    z-index: 20;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+    display: none;
+    pointer-events: none;
 }
 
 .modal-metric-card:hover {

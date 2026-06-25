@@ -350,6 +350,12 @@ function renderMetricCards(series, selectedMetric) {
             class="modal-metric-card ${metric.key === selectedMetric ? 'is-active' : ''}"
             data-metric="${metric.key}"
         >
+            <button type="button" class="modal-metric-info-btn" onclick="togglePopover(event, '${metric.key}')">
+                <i data-lucide="help-circle" style="width: 16px; height: 16px;"></i>
+            </button>
+            <div id="popover-${metric.key}" class="modal-popover">
+                ${METRICAS_INFO[metric.key] || 'Informação não disponível.'}
+            </div>
             <span class="modal-metric-card__icon">
                 <i data-lucide="${metric.icon}" style="width: 16px; height: 16px;"></i>
             </span>
@@ -360,6 +366,18 @@ function renderMetricCards(series, selectedMetric) {
             <span class="modal-metric-card__note">Clique para trocar o gráfico</span>
         </button>
     `).join('');
+}
+
+function togglePopover(event, key) {
+    event.stopPropagation();
+    const popover = document.getElementById(`popover-${key}`);
+    const allPopovers = document.querySelectorAll('.modal-popover');
+    
+    allPopovers.forEach(p => {
+        if(p !== popover) p.style.display = 'none';
+    });
+    
+    popover.style.display = popover.style.display === 'block' ? 'none' : 'block';
 }
 
 function mountMetricSwitcher(modalState) {

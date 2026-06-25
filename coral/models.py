@@ -37,3 +37,17 @@ class Contact(models.Model):
     def pode_deletar(self):
         """Retorna True se a mensagem pode ser deletada (não está deletada)"""
         return not self.deletado
+
+
+class Alerta(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='alertas')
+    region_name = models.CharField(max_length=255)  # Nome da região string
+    target_temp = models.FloatField()
+    repeat = models.BooleanField(default=True)
+    active = models.BooleanField(default=True)
+    criado_em = models.DateTimeField(auto_now_add=True)
+    atualizado_em = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.user.username} - {self.region_name} - {self.target_temp}°C"
+

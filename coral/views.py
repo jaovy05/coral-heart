@@ -14,8 +14,8 @@ from django.contrib.auth.views import LoginView
 from django.utils.decorators import method_decorator
 from django.views.decorators.http import require_http_methods
 from django.utils import timezone
-from .models import Contact
-from .forms import ContactForm, CustomUserCreationForm, UserUpdateForm
+from .models import Contact, Alerta
+from .forms import ContactForm, CustomUserCreationForm, UserUpdateForm, AlertaForm
 
 # Create your views here.
 def index(request):
@@ -308,3 +308,69 @@ def logout_view(request):
     """Faz logout do usuário."""
     logout(request)
     return redirect('index')
+
+
+class AlertaListView(LoginRequiredMixin, ListView):
+    model = Alerta
+    template_name = 'alertas/alerta_list.html'
+    context_object_name = 'alertas'
+
+    def get_queryset(self):
+        return Alerta.objects.filter(user=self.request.user).order_by('-criado_em')
+
+
+class AlertaCreateView(LoginRequiredMixin, CreateView):
+    model = Alerta
+    form_class = AlertaForm
+    template_name = 'alertas/alerta_form.html'
+    success_url = reverse_lazy('alerta-list')
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super().form_valid(form)
+
+
+class AlertaUpdateView(LoginRequiredMixin, UpdateView):
+    model = Alerta
+    form_class = AlertaForm
+    template_name = 'alertas/alerta_form.html'
+    success_url = reverse_lazy('alerta-list')
+
+    def get_queryset(self):
+        return Alerta.objects.filter(user=self.request.user)
+
+
+class AlertaDeleteView(LoginRequiredMixin, DeleteView):
+    model = Alerta
+    template_name = 'alertas/alerta_confirm_delete.html'
+    success_url = reverse_lazy('alerta-list')
+
+    def get_queryset(self):
+        return Alerta.objects.filter(user=self.request.user)
+
+
+@require_http_methods(["POST"])
+def criar_alerta_api(request):
+    if not request.user.is_authenticated:
+        return JsonResponse({'success': False, 'error': 'Usuário não autenticado.'}, status=401)
+    
+    try:
+        data = json.loads(request.body)
+        region_name = data.get('region_name')
+        target_temp = float(data.get('target_temp'))
+        repeat = bool(data.get('repeat', True))
+        
+        if not region_name:
+            return JsonResponse({'success': False, 'error': 'Nome da região é obrigatório.'}, status=400)
+            
+        alerta = Alerta.objects.create(
+            user=request.user,
+            region_name=region_name,
+            target_temp=target_temp,
+            repeat=repeat,
+            active=True
+        )
+        return JsonResponse({'success': True, 'alerta_id': alerta.id})
+    except (ValueError, TypeError, json.JSONDecodeError) as e:
+        return JsonResponse({'success': False, 'error': f'Dados inválidos: {str(e)}'}, status=400)
+

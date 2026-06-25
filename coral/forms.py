@@ -104,3 +104,42 @@ class UserUpdateForm(forms.ModelForm):
         if commit:
             user.save()
         return user
+
+
+from .models import Alerta
+from coral.infra import db
+
+def obter_regioes():
+    try:
+        with db.obter_conexao() as conn:
+            result = conn.execute("SELECT DISTINCT pais FROM regiao ORDER BY pais").fetchall()
+            return [(r[0], r[0]) for r in result]
+    except Exception:
+        return []
+
+
+class AlertaForm(forms.ModelForm):
+    class Meta:
+        model = Alerta
+        fields = ['region_name', 'target_temp', 'repeat', 'active']
+        labels = {
+            'region_name': 'Região',
+            'target_temp': 'Temperatura Limite (°C)',
+            'repeat': 'Repetir Alerta',
+            'active': 'Ativo'
+        }
+        widgets = {
+            'region_name': forms.Select(attrs={'class': 'form-control'}),
+            'target_temp': forms.NumberInput(attrs={'class': 'form-control', 'step': '0.1'}),
+            'repeat': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+            'active': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        regioes = obter_regioes()
+        if regioes:
+            self.fields['region_name'].widget = forms.Select(choices=regioes, attrs={'class': 'form-control'})
+        else:
+            self.fields['region_name'].widget = forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Nome da Região'})
+
